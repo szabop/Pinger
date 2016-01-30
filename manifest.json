@@ -8,12 +8,14 @@
     "scripts": ["options.js", "background.js"]
   },
   "browser_action": {
-    "default_icon": "icon_initializing.png"
+    "default_icon": "icon_initializing.png",
+    "default_popup": "popup.html"
   },
   "options_ui": {
     "page": "options.html",
     "chrome_style": true
   },
+
   "permissions": [
     "storage",
     "http://*/",
