@@ -15,6 +15,7 @@
     "chrome_style": true
   },
   "permissions": [
+    "storage",
     "http://*/",
     "https://*/"
   ]
