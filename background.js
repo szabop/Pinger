@@ -154,6 +154,7 @@ var App = function() {
 	this.oOptions = new Options() ;
 	this.oDisplay = new Display() ;
 
+	this.oOptions.onChange(this._configChange.bind(this)) ;
 
 } ;
 
@@ -185,7 +186,13 @@ App.prototype.stopPolling = function() {
 } ;
 
 App.prototype._configChange = function() {
-
+	console.log("Config change...") ;
+	this.oConfig = null ;
+	
+	if(this.oTimer !== null) {
+		this.stopPolling() ;
+		this.startPolling() ;
+	} ;
 } ;
 
 App.prototype._scheduledStep = function() {

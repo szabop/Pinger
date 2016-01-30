@@ -1,5 +1,5 @@
 var Options = function() {
-
+      
 } ;
 
 Options.prototype.load = function(fnConfig) {
@@ -72,6 +72,13 @@ Options.prototype.store = function(oCfg) {
 
 	chrome.storage.local.set(oCfg) ;
 } ;
+
+Options.prototype.onChange = function(fnCallback) {
+	chrome.storage.onChanged.addListener(function() {
+		fnCallback.call(null) ;
+	}) ;
+} ;
+
 
 
 
