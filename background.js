@@ -148,30 +148,55 @@ Display.prototype.setIcon = function(sState) {
 //
 ///////////////////////////////////////////////////////////////////////
 
-var oConfig = {
-	interval: 5000
-}
+var App = function() {
+	this.oTester  = null ;
+	this.oConfig  = null ;
+	this.oOptions = new Options() ;
+	this.oDisplay = new Display() ;
 
-var oTester = new Tester({
-	references: {
-		"GOOGLE": "http://google.com/",
-		"INDEX": "http://index.hu/"
-	},
-	urlsToWatch: {
-		"ORIGO": "http://origo.hu",
-		// "SZANALMAS": "http://szzanalmas.hu"
+
+} ;
+
+App.prototype.startPolling = function() {
+	var self = this ;
+
+	if(this.oConfig === null) {
+		this.oOptions.load(function(oCfg) {
+			self.oConfig = self.oOptions.unpack(oCfg) ;
+			self.startPolling() ;
+		}) ;
 	}
-}) ;
+	else {
+		this.oTester = new Tester({
+			references: this.oConfig.references,
+			urlsToWatch: this.oConfig.urls
+		}) ;
 
-var oDisplay = new Display() ;
+		this._scheduledStep() ;
 
-var fnScheduler = function() {
+	} ;
+} ;
+
+App.prototype.stopPolling = function() {
+	if(this.oTimer !== null) {
+		clearTimeout(this.oTimer) ;
+	}
+	this.oTimer = null ;
+} ;
+
+App.prototype._configChange = function() {
+
+} ;
+
+App.prototype._scheduledStep = function() {
 	console.info("Background function called!") ;
-	oTester.ping() ;
-	var sState = oTester.checkUrls() ;
-	oDisplay.setIcon(sState) ;
+	this.oTester.ping() ;
+	var sState = this.oTester.checkUrls() ;
+	this.oDisplay.setIcon(sState) ;
 
-	oTimer = setTimeout(fnScheduler, oConfig.interval)
-}
+	this.oTimer = 
+		setTimeout(this._scheduledStep.bind(this), this.oConfig.interval) ;
+} ;
 
-fnScheduler() ;
+var oApp = new App() ;
+oApp.startPolling() ;

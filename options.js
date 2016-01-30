@@ -39,16 +39,16 @@ Options.prototype.pack = function(oConfig) {
 Options.prototype.unpack = function(oCfg) {
 	var fnSplitURL = function(aUrls) {
 		aUrls = aUrls || [] ;
-		var aSplitUrls = [] ;
+		var oSplitUrls = {} ;
 		for(var i=0; i<aUrls.length; i++) {
 			var aHack = aUrls[i].split('|') ;
-			var sKey = aUrls[0] || '<ERROR>' ;
-			aUrls.shift(1) ;
-			var sUrl = aUrls.join('|') || '<ERROR>';
+			var sKey = aHack[0] || '<ERROR>' ;
+			aHack.shift(1) ;
+			var sUrl = aHack.join('|') || '<ERROR>';
 
-			aSplitUrls.push({ key: sKey, url: sUrl }) ;
+			oSplitUrls[sKey]= sUrl ;
 		}
-		return aSplitUrls ;
+		return oSplitUrls ;
 	} ;
 
 	// @TODO: Use some object copy thing here...
