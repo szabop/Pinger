@@ -117,7 +117,7 @@ var Tester = (function() {
 ///////////////////////////////////////////////////////////////////////
 var Display = function() {
 
-}
+} ;
 
 Display.prototype.setIcon = function(sState) {
 	var sIcon = "icon_initializing.png" ;
@@ -140,7 +140,24 @@ Display.prototype.setIcon = function(sState) {
     // chrome.browserAction.setBadgeText({
     //  text: localStorage.unreadCount != "0" ? localStorage.unreadCount : ""
     // });
-}
+} ;
+
+Display.prototype.openAlert = function(sText) {
+  // chrome.tabs.getAllInWindow(undefined, function(tabs) {
+  //   for (var i = 0, tab; tab = tabs[i]; i++) {
+  //     if (tab.url && isGmailUrl(tab.url)) {
+  //       console.log('Found Gmail tab: ' + tab.url + '. ' +
+  //                   'Focusing and refreshing count...');
+  //       chrome.tabs.update(tab.id, {selected: true});
+  //       return;
+  //     }
+  //   }
+  //   console.log('Could not find Gmail tab. Creating one...');
+  //   chrome.tabs.create({url: "https://www.youtube.com/watch?v=hlv672jqbtE"});
+  // });
+  chrome.tabs.create({url: "https://www.youtube.com/watch?v=hlv672jqbtE"});
+
+} ;
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -200,6 +217,14 @@ App.prototype._scheduledStep = function() {
 	this.oTester.ping() ;
 	var sState = this.oTester.checkUrls() ;
 	this.oDisplay.setIcon(sState) ;
+
+	//
+	//
+	//
+	if(this.sOldState !== "DOWN" && sState === "DOWN") {
+		this.oDisplay.openAlert() ;
+	} ;
+	this.sOldState = sState ;
 
 	this.oTimer = 
 		setTimeout(this._scheduledStep.bind(this), this.oConfig.interval) ;
