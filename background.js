@@ -116,7 +116,7 @@ var Tester = (function() {
 //
 ///////////////////////////////////////////////////////////////////////
 var Display = function() {
-
+	this.oAlertTab = null ;
 } ;
 
 Display.prototype.setIcon = function(sState) {
@@ -155,8 +155,21 @@ Display.prototype.openAlert = function(sText) {
   //   console.log('Could not find Gmail tab. Creating one...');
   //   chrome.tabs.create({url: "https://www.youtube.com/watch?v=hlv672jqbtE"});
   // });
-  chrome.tabs.create({url: "https://www.youtube.com/watch?v=hlv672jqbtE"});
+  if(this.oAlertTab !== null) { return; } ;
 
+  var self = this ;
+  chrome.tabs.create(
+  	{url: "https://www.youtube.com/watch?v=hlv672jqbtE"},
+  	function(oTab) {
+  		self.oAlertTab = oTab ;
+  	});
+} ;
+
+Display.prototype.closeAlert = function() {
+	if(this.oAlertTab === null) return ;
+
+	chrome.tabs.remove(this.oAlertTab.id) ;
+	this.oAlertTab = null ;
 } ;
 
 
@@ -219,11 +232,14 @@ App.prototype._scheduledStep = function() {
 	this.oDisplay.setIcon(sState) ;
 
 	//
-	//
+	// State machine for cancelling alerts...
 	//
 	if(this.sOldState !== "DOWN" && sState === "DOWN") {
 		this.oDisplay.openAlert() ;
 	} ;
+	if(this.sOldState === "DOWN" && sState !== "DOWN") {
+		this.oDisplay.closeAlert() ;	
+	}
 	this.sOldState = sState ;
 
 	this.oTimer = 
